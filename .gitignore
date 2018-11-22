@@ -1,5 +1,6 @@
 .idea
 .DS_Store
-*.pyc
+app.pyc
+models.pyc
 migrations
 venv

@@ -21,7 +21,7 @@ db.init_app(app)
 @app.route('/')
 
 def main():
-    return 'Hello wissaal!'
+    return 'Hello wissaalllll!'
 
 @app.route('/insertText', methods=['POST' , 'GET'])
 

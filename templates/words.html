@@ -1,0 +1,12 @@
+<html>
+  <body>
+    <h1>list of words</h1>
+    {% for word in words %}
+    <p>{{word}}</p>
+    <form method="POST" action="/definition">
+      <input type="hidden" value="{{word}}" name="word">
+      <input type="submit" value="Definition">
+    </form>
+    {% endfor %}
+  </body>
+</html>

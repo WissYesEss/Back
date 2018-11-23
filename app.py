@@ -42,6 +42,35 @@ def insertText():
     return render_template("home.html" )
 
 
+@app.route('/insertTrans', methods=['POST' , 'GET' ])
+
+def insertTrans():
+
+    if request.method == 'POST':
+        print('json',request.json)
+        print('getj',request.get_json('text'))
+        req_data =request.get_json()
+        print('text',req_data['text'])
+        print('data',request.data)
+        #return jsonify({'message':req_data['text']})
+        #for i in request.json:
+        print(request.json['text'])
+                
+        if request.data:
+            data= req_data['text']
+            
+            wordList = re.sub("[^\w]", " ", request.json['text']).split()
+            print('wordList',wordList)
+            trans = Transcript(transcription=data , word_list=wordList)
+            db.session.add(trans)
+            db.session.commit()
+            
+            return jsonify({'message':'success story'})
+    else:
+        return jsonify({'message':'no post'})    
+        
+
+
 @app.route('/definition', methods=['POST' , 'GET'])
 def getting_word_def():
     if request.form:

@@ -33,11 +33,21 @@ def insertText():
         db.session.commit()
         i = 0
         returnedList = []
+        data = {'words': []}
         while i < 10:
             x=random.choice(wordList)
-            i = i +1
-            returnedList.append(x)
-        return render_template("words.html" , words=returnedList)
+            res = requests.get("https://dictionnaire-api.herokuapp.com/exact_def/{}".format(x)).json()
+            print(x)
+            if (len(res['items']) == 0) : 
+                print('nexiste une def')
+            else:
+                i = i+1
+                definition = res['items'][0]['def']
+                data['words'].append({'word': x , 'definiton':definition})
+                print(data)
+                returnedList.append(x)
+        #return render_template("words.html" , words=returnedList)
+        return jsonify(data)
 
     return render_template("home.html" )
 
@@ -64,8 +74,23 @@ def insertTrans():
             trans = Transcript(transcription=data , word_list=wordList)
             db.session.add(trans)
             db.session.commit()
-            
-            return jsonify({'message':'success story'})
+            i = 0
+            returnedList = []
+            jsondata = {'words': []}
+            while i < 10:
+                x=random.choice(wordList)
+                res = requests.get("https://dictionnaire-api.herokuapp.com/exact_def/{}".format(x)).json()
+                print(x)
+                if (len(res['items']) == 0) : 
+                    print('nexiste une def')
+                else:
+                    i = i+1
+                    definition = res['items'][0]['def']
+                    jsondata['words'].append({'word': x , 'definiton':definition})
+                    print(jsondata)
+                    returnedList.append(x)
+            #return render_template("words.html" , words=returnedList)
+            return jsonify(jsondata)            
     else:
         return jsonify({'message':'no post'})    
         

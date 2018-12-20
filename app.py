@@ -9,6 +9,9 @@ import re
 import random
 from flask import render_template
 from models import Transcript
+from gtts import gTTS 
+
+
 app = Flask(__name__)
 #app.config.from_object(os.environ['APP_SETTINGS'])
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -104,6 +107,19 @@ def getting_word_def():
         print('test')
         return res['items'][0]['def']
 
-
+@app.route('/audioTest', methods=['POST' , 'GET'])
+def getting_audio_file():
+    if request.method == 'POST':
+        #mytext = request.form.get("question")
+        mytext =request.json['question']
+        #mytext="hello this is a wissal"
+        language = 'en'
+        myobj = gTTS(text=mytext, lang=language, slow=False) 
+        myobj.save("welcome.mp3") 
+        os.system("mpg321 welcome.mp3") 
+        return jsonify({'message':'done'}) 
+    else:
+        return jsonify({'message':'no post'}) 
+           
 if __name__ == '__main__':
     app.run()

@@ -12,7 +12,7 @@ from models import Transcript
 from gtts import gTTS 
 #from playsound import playsound
 import pygame
-
+from playsound import playsound
 app = Flask(__name__)
 #app.config.from_object(os.environ['APP_SETTINGS'])
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -117,12 +117,12 @@ def getting_audio_file():
         language = 'en'
         myobj = gTTS(text=mytext, lang=language, slow=False) 
         myobj.save("welcome.mp3")
-        
+        '''
         pygame.mixer.init()
         pygame.mixer.music.load('welcome.mp3')
         pygame.mixer.music.play(0)
-        
-        #playsound('welcome.mp3')
+        '''
+        playsound('welcome.mp3')
         return jsonify({'message':'done'}) 
     else:
         return jsonify({'message':'no post'}) 

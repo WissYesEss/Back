@@ -1,4 +1,5 @@
 import os
+import platform
 from flask import abort, flash, redirect, render_template, request, url_for, jsonify
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -10,8 +11,8 @@ import random
 from flask import render_template
 from models import Transcript
 from gtts import gTTS 
-#from playsound import playsound
-from playsound import playsound
+from pygame import mixer
+
 app = Flask(__name__)
 #app.config.from_object(os.environ['APP_SETTINGS'])
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -116,12 +117,9 @@ def getting_audio_file():
         language = 'en'
         myobj = gTTS(text=mytext, lang=language, slow=False) 
         myobj.save("welcome.mp3")
-        '''
-        pygame.mixer.init()
-        pygame.mixer.music.load('welcome.mp3')
-        pygame.mixer.music.play(0)
-        '''
-        playsound('welcome.mp3')
+        mixer.init()
+        mixer.music.load("welcome.mp3")
+        mixer.music.play()
         return jsonify({'message':'done'}) 
     else:
         return jsonify({'message':'no post'}) 

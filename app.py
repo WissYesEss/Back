@@ -11,7 +11,6 @@ from flask import render_template
 from models import Transcript
 from gtts import gTTS 
 #from playsound import playsound
-import pygame
 from playsound import playsound
 app = Flask(__name__)
 #app.config.from_object(os.environ['APP_SETTINGS'])

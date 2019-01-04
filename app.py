@@ -13,7 +13,7 @@ from models import Transcript
 from gtts import gTTS 
 from urllib import unquote
 
-#from pygame import mixer
+import pygame 
 #import pyttsx3
 
 app = Flask(__name__)
@@ -122,6 +122,16 @@ def getting_audio_file():
         language = 'en'
         myobj = gTTS(text=mytext, lang=language, slow=False) 
         myobj.save("welcome.mp3")
+        '''
+        mixer.init()
+        s = mixer.Sound('welcome.mp3')
+        s.play()
+        '''
+        pygame.mixer.init()  # Initialize the mixer module.
+        pygame.mixer.music.load('welcome.mp3')  # Load a sound.
+
+        pygame.mixer.music.play()  # Play the sound.
+        print('Playing sound')
         '''
         mixer.init()
         mixer.music.load("welcome.mp3")

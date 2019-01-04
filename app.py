@@ -11,7 +11,10 @@ import random
 from flask import render_template
 from models import Transcript
 from gtts import gTTS 
-from pygame import mixer
+from urllib import unquote
+
+#from pygame import mixer
+#import pyttsx3
 
 app = Flask(__name__)
 #app.config.from_object(os.environ['APP_SETTINGS'])
@@ -111,15 +114,37 @@ def getting_word_def():
 @app.route('/audioTest', methods=['POST' , 'GET'])
 def getting_audio_file():
     if request.method == 'POST':
+        mytext =request.json['question']
+        
         #mytext = request.form.get("question")
         mytext =request.json['question']
         #mytext="hello this is a wissal"
         language = 'en'
         myobj = gTTS(text=mytext, lang=language, slow=False) 
         myobj.save("welcome.mp3")
+        '''
         mixer.init()
         mixer.music.load("welcome.mp3")
         mixer.music.play()
+
+        
+        engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
+        for voice in voices:
+            print voice
+            if voice.languages[0] == u'en_US':
+                engine.setProperty('voice', voice.id)
+                break
+        engine.say(mytext)
+        engine.runAndWait()
+        engine.stop()
+        
+        engine = pyttsx3.init()
+
+        engine.say('The quick brown fox jumped over the lazy dog.')
+        engine.runAndWait()
+        #engine.stop()
+        '''
         return jsonify({'message':'done'}) 
     else:
         return jsonify({'message':'no post'}) 

@@ -115,12 +115,13 @@ def getting_word_def():
 @app.route('/audioTest', methods=['POST' , 'GET'])
 def getting_audio_file():
     if request.method == 'POST':
-
+        # text to speech
         mytext =request.json['question']
         language = 'en'
         myobj = gTTS(text=mytext, lang=language, slow=False) 
         myobj.save("welcome.mp3")
 
+        #cnx ssh
         k = paramiko.RSAKey.from_private_key_file("google_compute_engine",password='inH695Pu')
         c = paramiko.SSHClient()
         c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -128,48 +129,18 @@ def getting_audio_file():
         c.connect( hostname = "35.198.131.73",username = "romain",pkey=k,look_for_keys=False)
         print "connected"
         
-        ssh_stdin, ssh_stdout, ssh_stderr = c.exec_command("cd /var/www/html/public/courses/  && ls")
-        print(ssh_stdout.readlines())
+        #ssh_stdin, ssh_stdout, ssh_stderr = c.exec_command("cd /var/www/html/public/courses/  && ls")
+        #print(ssh_stdout.readlines())
+
+        # upload file on server
         ftp_client=c.open_sftp()
         now = datetime.datetime.now()
         name = now.isoformat()
+        remote_link = 'https://courses.yesnyoulearning.com/public/courses/'+name+'.mp3'
         ftp_client.put('welcome.mp3','/var/www/html/public/courses/'+name+'.mp3')
         ftp_client.close()
 
-        '''        
-        mixer.init()
-        s = mixer.Sound('welcome.mp3')
-        s.play()
-        
-        pygame.mixer.init()  # Initialize the mixer module.
-        pygame.mixer.music.load('welcome.mp3')  # Load a sound.
-
-        pygame.mixer.music.play()  # Play the sound.
-        print('Playing sound')
-        
-        mixer.init()
-        mixer.music.load("welcome.mp3")
-        mixer.music.play()
-
-        
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        for voice in voices:
-            print voice
-            if voice.languages[0] == u'en_US':
-                engine.setProperty('voice', voice.id)
-                break
-        engine.say(mytext)
-        engine.runAndWait()
-        engine.stop()
-        
-        engine = pyttsx3.init()
-
-        engine.say('The quick brown fox jumped over the lazy dog.')
-        engine.runAndWait()
-        #engine.stop()
-        '''
-        return jsonify({'message':'done'}) 
+        return remote_link 
     else:
         return jsonify({'message':'no post'}) 
            

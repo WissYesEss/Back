@@ -12,7 +12,8 @@ from flask import render_template
 from models import Transcript
 from gtts import gTTS 
 from urllib import unquote
-
+import paramiko
+import datetime
 import pygame 
 #import pyttsx3
 
@@ -114,25 +115,38 @@ def getting_word_def():
 @app.route('/audioTest', methods=['POST' , 'GET'])
 def getting_audio_file():
     if request.method == 'POST':
+
         mytext =request.json['question']
-        
-        #mytext = request.form.get("question")
-        mytext =request.json['question']
-        #mytext="hello this is a wissal"
         language = 'en'
         myobj = gTTS(text=mytext, lang=language, slow=False) 
         myobj.save("welcome.mp3")
-        '''
+
+        k = paramiko.RSAKey.from_private_key_file("google_compute_engine",password='inH695Pu')
+        c = paramiko.SSHClient()
+        c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        print "connecting"
+        c.connect( hostname = "35.198.131.73",username = "romain",pkey=k,look_for_keys=False)
+        print "connected"
+        
+        ssh_stdin, ssh_stdout, ssh_stderr = c.exec_command("cd /var/www/html/public/courses/  && ls")
+        print(ssh_stdout.readlines())
+        ftp_client=c.open_sftp()
+        now = datetime.datetime.now()
+        name = now.isoformat()
+        ftp_client.put('welcome.mp3','/var/www/html/public/courses/'+name+'.mp3')
+        ftp_client.close()
+
+        '''        
         mixer.init()
         s = mixer.Sound('welcome.mp3')
         s.play()
-        '''
+        
         pygame.mixer.init()  # Initialize the mixer module.
         pygame.mixer.music.load('welcome.mp3')  # Load a sound.
 
         pygame.mixer.music.play()  # Play the sound.
         print('Playing sound')
-        '''
+        
         mixer.init()
         mixer.music.load("welcome.mp3")
         mixer.music.play()
